@@ -1,7 +1,6 @@
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Utils {
 
@@ -34,14 +33,29 @@ public class Utils {
 
     public static Expression toExpression(String string) {
         List<String> strings = parseExpression(string);
-        Expression rootExpression = new Expression();
-        for (String item : strings) {
+        Expression rootExpression = null;
+        Expression currentExpression = null;
+        for (int i = 0; i < strings.size(); i++) {
+            String item = strings.get(i);
+            if (currentExpression == null) {
+                currentExpression = new Expression();
+            }
+            if (rootExpression == null) {
+                rootExpression = currentExpression;
+            }
             if (isNumber(item)) {
                 Expression expression = new Expression(Integer.parseInt(item));
                 if (rootExpression.getLeft() == null) {
                     rootExpression.setLeft(expression);
                 } else {
-                    rootExpression.setRight(new Expression(Integer.parseInt(item)));
+                    if (isLastNumber(strings, i)) {
+                        rootExpression.setRight(new Expression(Integer.parseInt(item)));
+                    } else {
+                        Expression newExpression = new Expression();
+                        newExpression.setLeft(expression);
+                        currentExpression = newExpression;
+                        rootExpression.setRight(newExpression);
+                    }
                 }
                 continue;
             }
@@ -49,6 +63,12 @@ public class Utils {
                 rootExpression.setOperator(Operator.readValue(item));
             }
         }
+
         return rootExpression;
+    }
+
+    private static boolean isLastNumber(List<String> strings, int i) {
+        List<String> sublist = strings.subList(i, strings.size());
+        return sublist.stream().filter(Utils::isNumber).count() == 1;
     }
 }

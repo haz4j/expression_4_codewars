@@ -23,10 +23,26 @@ class UtilsTest {
     }
 
     @Test
-    void toExpressionSimple(){
+    void toExpressionSimple() {
         String string = "1 + 2";
         Expression expression = Utils.toExpression(string);
         Assertions.assertEquals(new Expression(new Expression(1), Operator.PLUS, new Expression(2)), expression);
     }
 
+    @Test
+    void toExpression3Numbers() {
+        String string = "1 + 2 + 3";
+        Expression expression = Utils.toExpression(string);
+        Assertions.assertEquals(
+                new Expression(
+                        new Expression(1),
+                        Operator.PLUS,
+                        new Expression(
+                                new Expression(2),
+                                Operator.PLUS,
+                                new Expression(3)
+                        )
+                )
+                , expression);
+    }
 }
