@@ -1,10 +1,21 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class Utils {
 
-    public static String deleteWhitespace(String expression){
-        return expression.replaceAll("\\s", "");
-    }
+    public static List<String> parseExpression(String expression) {
+        List<String> strings = Arrays.asList(expression
+                .replaceAll("\\s", "")
+                .replaceAll("\\+", "#+#")
+                .replaceAll("-", "#-#")
+                .replaceAll("\\*", "#*#")
+                .replaceAll("/", "#/#")
+                .replaceAll("\\(", "#(#")
+                .replaceAll("\\)", "#)#")
+                .split("#"));
 
-    public static Expression parseExpression(String expression){
-        return new Expression();
+        return strings.stream().filter(s -> !s.isBlank()).collect(Collectors.toList());
     }
 }
