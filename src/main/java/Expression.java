@@ -23,4 +23,15 @@ public class Expression {
         this.setOperator(operator);
         this.setRight(right);
     }
+
+    public void evaluate() {
+        if (getLeft() != null) {
+            getLeft().evaluate();
+            value = getLeft().getValue();
+        }
+        if (getRight() != null) {
+            getRight().evaluate();
+            value += getRight().getValue();
+        }
+    }
 }
