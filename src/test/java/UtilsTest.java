@@ -8,17 +8,25 @@ class UtilsTest {
 
     @Test
     void parseExpression() {
-        String expression = "1 + 2";
-        List<String> parsed = Utils.parseExpression(expression);
+        String string = "1 + 2";
+        List<String> parsed = Utils.parseExpression(string);
         Assertions.assertEquals(Arrays.asList("1", "+", "2"), parsed);
     }
 
     @Test
     void parseExpressionWithBracers() {
-        String expression = "(1 + 2) / (((3+7 *21)))";
-        List<String> parsed = Utils.parseExpression(expression);
+        String string = "(1 + 2) / (((3+7 *21)))";
+        List<String> parsed = Utils.parseExpression(string);
         Assertions.assertEquals(
                 Arrays.asList("(", "1", "+", "2", ")", "/", "(", "(", "(", "3", "+", "7", "*", "21", ")", ")", ")"),
                 parsed);
     }
+
+    @Test
+    void toExpressionSimple(){
+        String string = "1 + 2";
+        Expression expression = Utils.toExpression(string);
+        Assertions.assertEquals(new Expression(new Expression(1), Operator.PLUS, new Expression(2)), expression);
+    }
+
 }
