@@ -45,22 +45,22 @@ public class Utils {
             }
             if (isNumber(item)) {
                 Expression expression = new Expression(Integer.parseInt(item));
-                if (rootExpression.getLeft() == null) {
-                    rootExpression.setLeft(expression);
+                if (currentExpression.getLeft() == null) {
+                    currentExpression.setLeft(expression);
                 } else {
                     if (isLastNumber(strings, i)) {
-                        rootExpression.setRight(new Expression(Integer.parseInt(item)));
+                        currentExpression.setRight(expression);
                     } else {
-                        Expression newExpression = new Expression();
-                        newExpression.setLeft(expression);
-                        currentExpression = newExpression;
-                        rootExpression.setRight(newExpression);
+                        Expression newCurrent = new Expression();
+                        newCurrent.setLeft(expression);
+                        currentExpression.setRight(newCurrent);
+                        currentExpression = newCurrent;
                     }
                 }
                 continue;
             }
             if (isOperator(item)) {
-                rootExpression.setOperator(Operator.readValue(item));
+                currentExpression.setOperator(Operator.readValue(item));
             }
         }
 
