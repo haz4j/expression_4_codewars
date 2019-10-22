@@ -4,10 +4,10 @@ import java.util.function.BinaryOperator;
 
 @Getter
 public enum Operator {
-    PLUS("+", 0, (i1, i2) -> i1 + i2),
-    MINUS("-", 0, (i1, i2) -> i1 - i2),
+    DIVISION("/", 0, (i1, i2) -> i1 / i2),
     MULTIPLICATION("*", 1, (i1, i2) -> i1 * i2),
-    DIVISION("/", 1, (i1, i2) -> i1 / i2);
+    MINUS("-", 2, (i1, i2) -> i1 - i2),
+    PLUS("+", 3, (i1, i2) -> i1 + i2);
 
     private final String text;
     private final int priority;
