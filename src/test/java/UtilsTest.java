@@ -50,4 +50,28 @@ class UtilsTest {
         assertNotNull(expression.getValue());
         assertEquals(6, expression.getValue().intValue());
     }
+
+    @Test
+    void expression4Numbers() {
+        String string = "1 - 2 + 3 - 4";
+        Expression expression = Utils.toExpression(string);
+        assertEquals(
+                new Expression(
+                        new Expression(1),
+                        Operator.MINUS,
+                        new Expression(
+                                new Expression(2),
+                                Operator.PLUS,
+                                new Expression(
+                                        new Expression(3),
+                                        Operator.MINUS,
+                                        new Expression(4)
+                                )
+                        )
+                )
+                , expression);
+        expression.evaluate();
+        assertNotNull(expression.getValue());
+        assertEquals(-2, expression.getValue().intValue());
+    }
 }

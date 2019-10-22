@@ -20,7 +20,7 @@ public class Utils {
 
     public static boolean isNumber(String s) {
         try {
-            int i = Integer.parseInt(s);
+            Integer.parseInt(s);
         } catch (NumberFormatException | NullPointerException nfe) {
             return false;
         }
@@ -28,7 +28,7 @@ public class Utils {
     }
 
     public static boolean isOperator(String s) {
-        return Arrays.stream(Operator.values()).map(operator -> operator.text).anyMatch(text -> text.equals(s));
+        return Arrays.stream(Operator.values()).map(Operator::getText).anyMatch(text -> text.equals(s));
     }
 
     public static Expression toExpression(String string) {

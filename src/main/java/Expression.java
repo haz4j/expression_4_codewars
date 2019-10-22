@@ -24,14 +24,10 @@ public class Expression {
         this.setRight(right);
     }
 
-    public void evaluate() {
-        if (getLeft() != null) {
-            getLeft().evaluate();
-            value = getLeft().getValue();
+    public Integer evaluate() {
+        if (getLeft() != null && getRight() != null) {
+            value = getOperator().getOperator().apply(getLeft().evaluate(), getRight().evaluate());
         }
-        if (getRight() != null) {
-            getRight().evaluate();
-            value += getRight().getValue();
-        }
+        return value;
     }
 }
