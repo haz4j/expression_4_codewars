@@ -25,17 +25,33 @@ class UtilsTest {
     }
 
     @Test
+    void simpleExpression() {
+        String string = "1 / 2";
+        Expression expression = Utils.toExpression(string);
+        assertEquals(
+                new Expression(Arrays.asList(
+                        new Expression(1),
+                        new Expression(Operator.DIVISION),
+                        new Expression(2)
+                )),
+                expression);
+        expression.evaluate();
+        assertNotNull(expression.getValue());
+        assertEquals(0, expression.getValue().intValue());
+    }
+
+    @Test
     void expression3Numbers() {
         String string = "1 + 2 + 3";
         Expression expression = Utils.toExpression(string);
         assertEquals(
-                Expression.builder().subexpressions(Arrays.asList(
-                        Expression.builder().value(1).build(),
-                        Expression.builder().operator(Operator.PLUS).build(),
-                        Expression.builder().value(2).build(),
-                        Expression.builder().operator(Operator.PLUS).build(),
-                        Expression.builder().value(3).build()
-                )).build(),
+                new Expression(Arrays.asList(
+                        new Expression(1),
+                        new Expression(Operator.PLUS),
+                        new Expression(2),
+                        new Expression(Operator.PLUS),
+                        new Expression(3)
+                )),
                 expression);
         expression.evaluate();
         assertNotNull(expression.getValue());
@@ -47,15 +63,15 @@ class UtilsTest {
         String string = "1 - 2 + 3 - 4";
         Expression expression = Utils.toExpression(string);
         assertEquals(
-                Expression.builder().subexpressions(Arrays.asList(
-                        Expression.builder().value(1).build(),
-                        Expression.builder().operator(Operator.MINUS).build(),
-                        Expression.builder().value(2).build(),
-                        Expression.builder().operator(Operator.PLUS).build(),
-                        Expression.builder().value(3).build(),
-                        Expression.builder().operator(Operator.MINUS).build(),
-                        Expression.builder().value(4).build()
-                )).build(),
+                new Expression(Arrays.asList(
+                        new Expression(1),
+                        new Expression(Operator.MINUS),
+                        new Expression(2),
+                        new Expression(Operator.PLUS),
+                        new Expression(3),
+                        new Expression(Operator.MINUS),
+                        new Expression(4)
+                )),
                 expression);
         expression.evaluate();
         assertNotNull(expression.getValue());
@@ -96,5 +112,27 @@ class UtilsTest {
         expression.evaluate();
         assertNotNull(expression.getValue());
         assertEquals(0, expression.getValue().intValue());
+    }
+
+    @Test
+    void expressionWithBrackets() {
+        String string = "(((1+2)))";
+        Expression expression = Utils.toExpression(string);
+        assertEquals(
+                new Expression(
+                        new Expression(
+                                new Expression(
+                                        new Expression(Arrays.asList(
+                                                new Expression(1),
+                                                new Expression(Operator.PLUS),
+                                                new Expression(2)
+                                        ))
+                                )
+                        )
+                ),
+                expression);
+        expression.evaluate();
+        assertNotNull(expression.getValue());
+        assertEquals(3, expression.getValue().intValue());
     }
 }

@@ -33,20 +33,35 @@ public class Utils {
         return Arrays.stream(Operator.values()).map(Operator::getText).anyMatch(text -> text.equals(s));
     }
 
+    public static boolean isOpenBracket(String s) {
+        return Bracket.OPEN.getSymbol().equals(s);
+    }
+
+    public static boolean isCloseBracket(String s) {
+        return Bracket.CLOSE.getSymbol().equals(s);
+    }
+
     public static Expression toExpression(String string) {
         List<String> strings = parseExpression(string);
 
         Expression rootExpression = new Expression();
-        rootExpression.setSubexpressions(new ArrayList<>());
+        Expression currentExpression = rootExpression;
+        rootExpression.setExpressions(new ArrayList<>());
         for (String item : strings) {
             Expression expression = new Expression();
             if (isNumber(item)) {
                 expression.setValue(Integer.parseInt(item));
+                currentExpression.getExpressions().add(expression);
             } else if (isOperator(item)) {
                 expression.setOperator(Operator.readValue(item));
+                currentExpression.getExpressions().add(expression);
+            } else if (isOpenBracket(item)) {
+                Expression child = new Expression();
+                currentExpression.setChild(child);
+                currentExpression = child;
+            } else if (isCloseBracket(item)) {
+                currentExpression = currentExpression.getParent();
             } else throw new RuntimeException("Can't read " + item);
-
-            rootExpression.getSubexpressions().add(expression);
         }
 
         return rootExpression;
@@ -61,7 +76,7 @@ public class Utils {
         for (Operator operator : operators) {
             subexpressions = calculateAllOperations(subexpressions, operator);
         }
-        if (subexpressions.size() != 1){
+        if (subexpressions.size() != 1) {
             throw new RuntimeException();
         }
 
@@ -70,7 +85,7 @@ public class Utils {
 
     private static List<Expression> calculateAllOperations(final List<Expression> expressions, Operator operator) {
         List<Expression> returnExpressions = expressions;
-        while(hasOperator(returnExpressions, operator)){
+        while (hasOperator(returnExpressions, operator)) {
             int operatorPosition = findOperatorPosition(returnExpressions, operator);
             Integer result = calculateResult(returnExpressions.subList(operatorPosition - 1, operatorPosition + 2));
             returnExpressions = replaceSubListWithResult(returnExpressions, operatorPosition, result);
@@ -79,30 +94,29 @@ public class Utils {
     }
 
     private static List<Expression> replaceSubListWithResult(List<Expression> expressions, int operatorPosition, Integer result) {
-        List<Expression> returnExpressions = new ArrayList<>();
         List<Expression> before = expressions.subList(0, operatorPosition - 1);
-        returnExpressions.addAll(before);
-        returnExpressions.add(Expression.builder().value(result).build());
+        List<Expression> returnExpressions = new ArrayList<>(before);
+        returnExpressions.add(new Expression(result));
         List<Expression> after = expressions.subList(operatorPosition + 2, expressions.size());
         returnExpressions.addAll(after);
         return returnExpressions;
     }
 
-    private static boolean hasOperator(List<Expression> expressions, Operator operator){
+    private static boolean hasOperator(List<Expression> expressions, Operator operator) {
         return expressions.stream().anyMatch(expression -> operator == expression.getOperator());
     }
 
-    private static int findOperatorPosition(List<Expression> expressions, Operator operator){
+    private static int findOperatorPosition(List<Expression> expressions, Operator operator) {
         for (int i = 0; i < expressions.size(); i++) {
-            if (operator == expressions.get(i).getOperator()){
+            if (operator == expressions.get(i).getOperator()) {
                 return i;
             }
         }
         return 0;
     }
 
-    private static Integer calculateResult(List<Expression> expressions){
-        if (expressions.size() != 3){
+    private static Integer calculateResult(List<Expression> expressions) {
+        if (expressions.size() != 3) {
             throw new RuntimeException();
         }
         Integer left = expressions.get(0).getValue();
