@@ -115,18 +115,20 @@ class UtilsTest {
     }
 
     @Test
-    void expressionWithBrackets() {
-        String string = "(((1+2)))";
+    void expressionWithBracket() {
+        String string = "(1+2)";
         Expression expression = Utils.toExpression(string);
         assertEquals(
                 new Expression(
-                        new Expression(
+                        Arrays.asList(
                                 new Expression(
-                                        new Expression(Arrays.asList(
-                                                new Expression(1),
-                                                new Expression(Operator.PLUS),
-                                                new Expression(2)
-                                        ))
+                                        new Expression(
+                                                Arrays.asList(
+                                                        new Expression(1),
+                                                        new Expression(Operator.PLUS),
+                                                        new Expression(2)
+                                                )
+                                        )
                                 )
                         )
                 ),
@@ -134,5 +136,37 @@ class UtilsTest {
         expression.evaluate();
         assertNotNull(expression.getValue());
         assertEquals(3, expression.getValue().intValue());
+    }
+
+
+    @Test
+    void expressionWithBrackets() {
+        String string = "((1+2))";
+        Expression expression = Utils.toExpression(string);
+//        assertEquals(
+//                new Expression(
+//                        new Expression(
+//                                new Expression(
+//                                        new Expression(Arrays.asList(
+//                                                new Expression(1),
+//                                                new Expression(Operator.PLUS),
+//                                                new Expression(2)
+//                                        ))
+//                                )
+//                        )
+//                ),
+//                expression);
+        expression.evaluate();
+        assertNotNull(expression.getValue());
+        assertEquals(3, expression.getValue().intValue());
+    }
+
+    @Test
+    void difficultExpressionWithBrackets() {
+        String string = "((1+2)*3)+4-(5-2)+4*((3+(5*3-(4-1)*7)))";
+        Expression expression = Utils.toExpression(string);
+        expression.evaluate();
+        assertNotNull(expression.getValue());
+        assertEquals(-2, expression.getValue().intValue());
     }
 }

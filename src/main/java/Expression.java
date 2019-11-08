@@ -7,12 +7,14 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "parent")
+@EqualsAndHashCode(exclude = "parent") //TODO: удалить
 public class Expression {
     private Operator operator;
     private Integer value;
     @Singular
-    private List<Expression> expressions = new ArrayList<>();
+    private List<Expression> subExpressions = new ArrayList<>();
+    private Expression wrapper;
+
     private Expression child;
     private Expression parent;
 
@@ -25,7 +27,7 @@ public class Expression {
     }
 
     public Expression(List<Expression> expressions) {
-        this.expressions = expressions;
+        this.subExpressions = expressions;
     }
 
     public Expression(Expression child) {
@@ -38,7 +40,7 @@ public class Expression {
     }
 
     public void evaluate() {
-        value = Utils.evaluate(expressions);
+        value = Utils.evaluate(subExpressions);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class Expression {
         return "Expression{" +
                 "operator=" + operator +
                 ", value=" + value +
-                ", expressions=" + expressions +
+                ", expressions=" + subExpressions +
                 ", child=" + child +
                 '}';
     }

@@ -46,21 +46,27 @@ public class Utils {
 
         Expression rootExpression = new Expression();
         Expression currentExpression = rootExpression;
-        rootExpression.setExpressions(new ArrayList<>());
+        rootExpression.setSubExpressions(new ArrayList<>());
         for (String item : strings) {
-            Expression expression = new Expression();
             if (isNumber(item)) {
-                expression.setValue(Integer.parseInt(item));
-                currentExpression.getExpressions().add(expression);
+                Expression itemExpression = new Expression();
+                itemExpression.setWrapper(currentExpression);
+                currentExpression.getSubExpressions().add(itemExpression);
+                itemExpression.setValue(Integer.parseInt(item));
             } else if (isOperator(item)) {
-                expression.setOperator(Operator.readValue(item));
-                currentExpression.getExpressions().add(expression);
+                Expression itemExpression = new Expression();
+                itemExpression.setWrapper(currentExpression);
+                currentExpression.getSubExpressions().add(itemExpression);
+                itemExpression.setOperator(Operator.readValue(item));
             } else if (isOpenBracket(item)) {
+                Expression itemExpression = new Expression();
+                itemExpression.setWrapper(currentExpression);
+                currentExpression.getSubExpressions().add(itemExpression);
                 Expression child = new Expression();
-                currentExpression.setChild(child);
+                itemExpression.setChild(child);
                 currentExpression = child;
             } else if (isCloseBracket(item)) {
-                currentExpression = currentExpression.getParent();
+                currentExpression = currentExpression.getParent().getWrapper();
             } else throw new RuntimeException("Can't read " + item);
         }
 
@@ -68,6 +74,13 @@ public class Utils {
     }
 
     public static Integer evaluate(List<Expression> expressions) {
+
+        for (int i = 0; i < expressions.size(); i++) {
+            if (expressions.get(i).getChild() != null) {
+                Expression evaluated = evaluate(expressions.get(i).getChild());
+                expressions.set(i, evaluated);
+            }
+        }
 
         List<Expression> subexpressions = expressions;
 
@@ -81,6 +94,11 @@ public class Utils {
         }
 
         return subexpressions.get(0).getValue();
+    }
+
+    private static Expression evaluate(Expression expression) {
+        Integer result = evaluate(expression.getSubExpressions());
+        return new Expression(result);
     }
 
     private static List<Expression> calculateAllOperations(final List<Expression> expressions, Operator operator) {
