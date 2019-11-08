@@ -62,11 +62,9 @@ public class Utils {
                 Expression itemExpression = new Expression();
                 itemExpression.setWrapper(currentExpression);
                 currentExpression.getSubExpressions().add(itemExpression);
-                Expression child = new Expression();
-                itemExpression.setChild(child);
-                currentExpression = child;
+                currentExpression = itemExpression;
             } else if (isCloseBracket(item)) {
-                currentExpression = currentExpression.getParent().getWrapper();
+                currentExpression = currentExpression.getWrapper();
             } else throw new RuntimeException("Can't read " + item);
         }
 
@@ -76,8 +74,8 @@ public class Utils {
     public static Integer evaluate(List<Expression> expressions) {
 
         for (int i = 0; i < expressions.size(); i++) {
-            if (expressions.get(i).getChild() != null) {
-                Expression evaluated = evaluate(expressions.get(i).getChild());
+            if (expressions.get(i).getSubExpressions() != null && expressions.get(i).getSubExpressions().size() != 0) {
+                Expression evaluated = evaluate2(expressions.get(i).getSubExpressions());
                 expressions.set(i, evaluated);
             }
         }
@@ -96,8 +94,8 @@ public class Utils {
         return subexpressions.get(0).getValue();
     }
 
-    private static Expression evaluate(Expression expression) {
-        Integer result = evaluate(expression.getSubExpressions());
+    private static Expression evaluate2(List<Expression> expressions) {
+        Integer result = evaluate(expressions);
         return new Expression(result);
     }
 
