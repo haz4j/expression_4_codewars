@@ -46,25 +46,25 @@ public class Utils {
 
         Expression rootExpression = new Expression();
         Expression currentExpression = rootExpression;
-        rootExpression.setSubExpressions(new ArrayList<>());
+        rootExpression.setChilds(new ArrayList<>());
         for (String item : strings) {
             if (isNumber(item)) {
                 Expression itemExpression = new Expression();
-                itemExpression.setWrapper(currentExpression);
-                currentExpression.getSubExpressions().add(itemExpression);
+                itemExpression.setParent(currentExpression);
+                currentExpression.getChilds().add(itemExpression);
                 itemExpression.setValue(Integer.parseInt(item));
             } else if (isOperator(item)) {
                 Expression itemExpression = new Expression();
-                itemExpression.setWrapper(currentExpression);
-                currentExpression.getSubExpressions().add(itemExpression);
+                itemExpression.setParent(currentExpression);
+                currentExpression.getChilds().add(itemExpression);
                 itemExpression.setOperator(Operator.readValue(item));
             } else if (isOpenBracket(item)) {
                 Expression itemExpression = new Expression();
-                itemExpression.setWrapper(currentExpression);
-                currentExpression.getSubExpressions().add(itemExpression);
+                itemExpression.setParent(currentExpression);
+                currentExpression.getChilds().add(itemExpression);
                 currentExpression = itemExpression;
             } else if (isCloseBracket(item)) {
-                currentExpression = currentExpression.getWrapper();
+                currentExpression = currentExpression.getParent();
             } else throw new RuntimeException("Can't read " + item);
         }
 
@@ -74,8 +74,8 @@ public class Utils {
     public static Integer evaluate(List<Expression> expressions) {
 
         for (int i = 0; i < expressions.size(); i++) {
-            if (expressions.get(i).getSubExpressions() != null && expressions.get(i).getSubExpressions().size() != 0) {
-                Expression evaluated = evaluate2(expressions.get(i).getSubExpressions());
+            if (expressions.get(i).getChilds() != null && expressions.get(i).getChilds().size() != 0) {
+                Expression evaluated = evaluate2(expressions.get(i).getChilds());
                 expressions.set(i, evaluated);
             }
         }

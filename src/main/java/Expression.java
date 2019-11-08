@@ -12,15 +12,15 @@ public class Expression {
     private Operator operator;
     private Integer value;
     @Singular
-    private List<Expression> subExpressions = new ArrayList<>();
-    private Expression wrapper;
+    private List<Expression> childs = new ArrayList<>();
+    private Expression parent;
 
     public Expression(Integer value) {
         this.value = value;
     }
 
     public void evaluate() {
-        value = Utils.evaluate(subExpressions);
+        value = Utils.evaluate(childs);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class Expression {
         return "Expression{" +
                 "operator=" + operator +
                 ", value=" + value +
-                ", expressions=" + subExpressions +
+                ", expressions=" + childs +
                 '}';
     }
 }
