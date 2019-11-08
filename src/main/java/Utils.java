@@ -45,30 +45,31 @@ public class Utils {
         List<String> strings = parseExpression(string);
 
         Expression rootExpression = new Expression();
-        Expression currentExpression = rootExpression;
+        Expression currentParent = rootExpression;
         rootExpression.setChilds(new ArrayList<>());
         for (String item : strings) {
             if (isNumber(item)) {
-                Expression itemExpression = new Expression();
-                itemExpression.setParent(currentExpression);
-                currentExpression.getChilds().add(itemExpression);
+                Expression itemExpression = createExpressionWithParent(currentParent);
                 itemExpression.setValue(Integer.parseInt(item));
             } else if (isOperator(item)) {
-                Expression itemExpression = new Expression();
-                itemExpression.setParent(currentExpression);
-                currentExpression.getChilds().add(itemExpression);
+                Expression itemExpression = createExpressionWithParent(currentParent);
                 itemExpression.setOperator(Operator.readValue(item));
             } else if (isOpenBracket(item)) {
-                Expression itemExpression = new Expression();
-                itemExpression.setParent(currentExpression);
-                currentExpression.getChilds().add(itemExpression);
-                currentExpression = itemExpression;
+                Expression itemExpression = createExpressionWithParent(currentParent);
+                currentParent = itemExpression;
             } else if (isCloseBracket(item)) {
-                currentExpression = currentExpression.getParent();
+                currentParent = currentParent.getParent();
             } else throw new RuntimeException("Can't read " + item);
         }
 
         return rootExpression;
+    }
+
+    private static Expression createExpressionWithParent(Expression currentExpression) {
+        Expression itemExpression = new Expression();
+        itemExpression.setParent(currentExpression);
+        currentExpression.getChilds().add(itemExpression);
+        return itemExpression;
     }
 
     public static Integer evaluate(List<Expression> expressions) {
