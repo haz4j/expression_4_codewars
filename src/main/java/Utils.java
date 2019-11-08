@@ -72,32 +72,30 @@ public class Utils {
         return itemExpression;
     }
 
-    public static Integer evaluate(List<Expression> expressions) {
-
-        for (int i = 0; i < expressions.size(); i++) {
-            if (expressions.get(i).getChilds() != null && expressions.get(i).getChilds().size() != 0) {
-                Expression evaluated = evaluate2(expressions.get(i).getChilds());
-                expressions.set(i, evaluated);
-            }
-        }
-
-        List<Expression> subexpressions = expressions;
+    public static Expression evaluate(List<Expression> expressions) {
+        List<Expression> withoutChilds = evaluateChildExpressions(expressions);
 
         List<Operator> operators = Arrays.stream(Operator.values()).sorted(Comparator.comparingInt(Operator::getPriority)).collect(Collectors.toList());
 
         for (Operator operator : operators) {
-            subexpressions = calculateAllOperations(subexpressions, operator);
+            withoutChilds = calculateAllOperations(withoutChilds, operator);
         }
-        if (subexpressions.size() != 1) {
+        if (withoutChilds.size() != 1) {
             throw new RuntimeException();
         }
 
-        return subexpressions.get(0).getValue();
+        return withoutChilds.get(0);
     }
 
-    private static Expression evaluate2(List<Expression> expressions) {
-        Integer result = evaluate(expressions);
-        return new Expression(result);
+    private static List<Expression> evaluateChildExpressions(List<Expression> expressions) {
+        for (int i = 0; i < expressions.size(); i++) {
+            if (expressions.get(i).getChilds() != null && expressions.get(i).getChilds().size() != 0) {
+                Expression evaluated = evaluate(expressions.get(i).getChilds());
+                expressions.set(i, evaluated);
+            }
+        }
+
+        return expressions;
     }
 
     private static List<Expression> calculateAllOperations(final List<Expression> expressions, Operator operator) {

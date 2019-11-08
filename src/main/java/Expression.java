@@ -20,7 +20,7 @@ public class Expression {
     }
 
     public void evaluate() {
-        value = Utils.evaluate(childs);
+        value = Utils.evaluate(childs).getValue();
     }
 
     @Override
