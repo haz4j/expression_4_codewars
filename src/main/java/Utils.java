@@ -139,7 +139,6 @@ public class Utils {
         Operator operator = expressions.get(1).getOperator();
         Integer right = expressions.get(2).getValue();
         //TODO add validation
-        Integer result = operator.getOperator().apply(left, right);
-        return result;
+        return operator.getOperator().apply(left, right);
     }
 }

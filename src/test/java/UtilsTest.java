@@ -28,13 +28,6 @@ class UtilsTest {
     void simpleExpression() {
         String string = "1 / 2";
         Expression expression = Utils.toExpression(string);
-//        assertEquals(
-//                new Expression(Arrays.asList(
-//                        new Expression(1),
-//                        new Expression(Operator.DIVISION),
-//                        new Expression(2)
-//                )),
-//                expression);
         expression.evaluate();
         assertNotNull(expression.getValue());
         assertEquals(0, expression.getValue().intValue());
@@ -44,15 +37,6 @@ class UtilsTest {
     void expression3Numbers() {
         String string = "1 + 2 + 3";
         Expression expression = Utils.toExpression(string);
-//        assertEquals(
-//                new Expression(Arrays.asList(
-//                        new Expression(1),
-//                        new Expression(Operator.PLUS),
-//                        new Expression(2),
-//                        new Expression(Operator.PLUS),
-//                        new Expression(3)
-//                )),
-//                expression);
         expression.evaluate();
         assertNotNull(expression.getValue());
         assertEquals(6, expression.getValue().intValue());
@@ -62,17 +46,6 @@ class UtilsTest {
     void expression4Numbers() {
         String string = "1 - 2 + 3 - 4";
         Expression expression = Utils.toExpression(string);
-//        assertEquals(
-//                new Expression(Arrays.asList(
-//                        new Expression(1),
-//                        new Expression(Operator.MINUS),
-//                        new Expression(2),
-//                        new Expression(Operator.PLUS),
-//                        new Expression(3),
-//                        new Expression(Operator.MINUS),
-//                        new Expression(4)
-//                )),
-//                expression);
         expression.evaluate();
         assertNotNull(expression.getValue());
         assertEquals(-2, expression.getValue().intValue());
@@ -118,21 +91,6 @@ class UtilsTest {
     void expressionWithBracket() {
         String string = "(1+2)";
         Expression expression = Utils.toExpression(string);
-//        assertEquals(
-//                new Expression(
-//                        Arrays.asList(
-//                                new Expression(
-//                                        new Expression(
-//                                                Arrays.asList(
-//                                                        new Expression(1),
-//                                                        new Expression(Operator.PLUS),
-//                                                        new Expression(2)
-//                                                )
-//                                        )
-//                                )
-//                        )
-//                ),
-//                expression);
         expression.evaluate();
         assertNotNull(expression.getValue());
         assertEquals(3, expression.getValue().intValue());
@@ -143,19 +101,6 @@ class UtilsTest {
     void expressionWithBrackets() {
         String string = "((1+2))";
         Expression expression = Utils.toExpression(string);
-//        assertEquals(
-//                new Expression(
-//                        new Expression(
-//                                new Expression(
-//                                        new Expression(Arrays.asList(
-//                                                new Expression(1),
-//                                                new Expression(Operator.PLUS),
-//                                                new Expression(2)
-//                                        ))
-//                                )
-//                        )
-//                ),
-//                expression);
         expression.evaluate();
         assertNotNull(expression.getValue());
         assertEquals(3, expression.getValue().intValue());

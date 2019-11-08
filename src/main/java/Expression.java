@@ -19,15 +19,6 @@ public class Expression {
         this.value = value;
     }
 
-    public Expression(Operator operator) {
-        this.operator = operator;
-    }
-
-    public Expression(List<Expression> expressions) {
-        this.subExpressions = expressions;
-    }
-
-
     public void evaluate() {
         value = Utils.evaluate(subExpressions);
     }
